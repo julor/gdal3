@@ -1861,3 +1861,15 @@ func VSIFReadL(nSize, nCount int, file VSILFILE) []byte {
 
 	return data
 }
+//Read bytes from memfile.
+func VSIGetMemFileBuffer(file string) []byte {
+	var count uint64
+	cfile := C.CString(file)
+	defer C.free(unsafe.Pointer(cfile))
+
+	ccount := C.ulonglong(count)
+	b := C.int(1)
+	
+	bt := C.VSIGetMemFileBuffer(cfile, &ccount, b)
+	return C.GoBytes(unsafe.Pointer(bt), C.int(ccount))
+}
